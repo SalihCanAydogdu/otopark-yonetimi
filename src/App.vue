@@ -9,8 +9,7 @@
           <nav class="nav">
             <div class="left-nav">
               <router-link to="/">Fiyatlandirma</router-link>
-              <router-link to="/user" v-if="isUserAuthenticated">User</router-link>
-              <router-link to="/moderator" v-if="isModeratorAuthenticated">Moderator</router-link>
+              <router-link to="/user" v-if="isUserAuthenticated">Otopark Yonetim Sistemi</router-link>
               <router-link to="/admin" v-if="isAdminAuthenticated">Admin</router-link>
             </div>
             <div class="signin-container">
@@ -58,7 +57,6 @@ export default {
   data() {
     return {
       isUserAuthenticated: false,
-      isModeratorAuthenticated: false,
       isAdminAuthenticated: false,
     };
   },
@@ -66,7 +64,6 @@ export default {
     isAuthenticated() {
       return (
         this.isUserAuthenticated ||
-        this.isModeratorAuthenticated ||
         this.isAdminAuthenticated
       );
     },
@@ -80,16 +77,6 @@ export default {
         })
         .catch(() => {
           this.isUserAuthenticated = false;
-        });
-    },
-    fetchModeratorContent() {
-      axios
-        .get("http://localhost:8080/api/test/mod", { withCredentials: true })
-        .then(() => {
-          this.isModeratorAuthenticated = true;
-        })
-        .catch(() => {
-          this.isModeratorAuthenticated = false;
         });
     },
     fetchAdminContent() {
@@ -108,7 +95,6 @@ export default {
         .post("http://localhost:8080/api/auth/logout", {}, { withCredentials: true })
         .then(() => {
           this.isUserAuthenticated = false;
-          this.isModeratorAuthenticated = false;
           this.isAdminAuthenticated = false;
           window.location.reload();
           router.replace("/signin");
@@ -120,7 +106,6 @@ export default {
   },
   created() {
     this.fetchUserContent();
-    this.fetchModeratorContent();
     this.fetchAdminContent();
   },
 };
