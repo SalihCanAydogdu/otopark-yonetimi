@@ -8,9 +8,9 @@
           </div>
           <nav class="nav">
             <div class="left-nav">
-              <router-link to="/">Fiyatlandirma</router-link>
+              <router-link to="/">Fiyatlandırma</router-link>
               <router-link to="/user" v-if="isUserAuthenticated">Otopark Yonetim Sistemi</router-link>
-              <router-link to="/admin" v-if="isAdminAuthenticated">Admin</router-link>
+              <router-link to="/admin" v-if="isAdminAuthenticated">Yönetici</router-link>
             </div>
             <div class="signin-container">
               <router-link

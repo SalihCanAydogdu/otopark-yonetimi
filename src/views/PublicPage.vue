@@ -87,7 +87,7 @@ export default {
 <style scoped>
 /* Başlık Stili */
 h1 {
-  color: #212529; /* Turuncu renk */
+  color: #212529; 
   font-size: 3em;
   font-weight: bold;
   text-align: center;

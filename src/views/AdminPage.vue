@@ -25,7 +25,6 @@
               <td>{{ formattedRoles(user.roles) }}</td>
               <td class="action-buttons">
                 <button @click="makeAdmin(user.id)" class="admin-button">Admin Yap</button>
-                <button @click="makeModerator(user.id)" class="moderator-button">Moderatör Yap</button>
                 <button @click="deleteUser(user.id)" class="delete-button">Sil</button>
               </td>
             </tr>
@@ -144,19 +143,7 @@ export default {
       }
     };
 
-    const makeModerator = async (userId) => {
-      try {
-        await axios.post(`http://localhost:8080/api/users/${userId}/moderator`, {}, {
-          withCredentials: true,
-        });
-        successMessage.value = `Kullanıcı (ID: ${userId}) moderatör yapıldı.`;
-        errorMessage.value = '';
-        fetchUsers();
-      } catch (error) {
-        errorMessage.value = 'Kullanıcı moderatör yapılırken hata oluştu.';
-        successMessage.value = '';
-      }
-    };
+
 
     const makeAdmin = async (userId) => {
       try {
@@ -223,7 +210,6 @@ export default {
       users,
       fetchUsers,
       formattedRoles,
-      makeModerator,
       makeAdmin,
       deleteUser,
       addUser,
@@ -302,14 +288,6 @@ export default {
   background-color: #0056b3; /* Koyu Mavi */
 }
 
-.moderator-button {
-  background-color: #5bc0de; /* Açık Mavi */
-  color: white;
-}
-
-.moderator-button:hover {
-  background-color: #31b0d5; /* Daha Koyu Açık Mavi */
-}
 
 .delete-button {
   background-color: #dc3545; /* Kırmızı */

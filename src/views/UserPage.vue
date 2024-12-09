@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>User Page</h1>
+    <h1>Otopark Yönetim Sistemi</h1>
     <p>{{ message }}</p>
     <!-- Çıkış Yap Butonu -->
     <div class="actions">
@@ -29,7 +29,7 @@ export default {
         })
         .then((response) => {
           if (response.data) {
-            this.message = response.data; // Gelen veriyi message'a ata
+            this.message = "Otopark yönetim sistemine hoşgeldiniz, buradan araçların giriş- çıkışını kontrol edebilirsiniz."; // Gelen veriyi message'a ata
           } else {
             this.message = "No data available.";
           }
@@ -59,7 +59,7 @@ export default {
 
 <style scoped>
 h1 {
-  color: #4CAF50;
+  color: #212529; ;
 }
 
 /* Çıkış Butonu Stili */
