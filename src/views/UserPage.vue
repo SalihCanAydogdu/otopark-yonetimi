@@ -4,6 +4,19 @@
     <h1>Otopark Yönetim Sistemi</h1>
     <p>{{ message }}</p>
 
+    <!-- Otoparktaki Araçlar Listesi -->
+    <div class="vehicles-list">
+      <h2>Otoparktaki Araçlar</h2>
+      <div class="vehicle-cards">
+        <div class="vehicle-card" v-for="arac in otoparktakiAraclar" :key="arac.id">
+          <img :src="getImageForVehicle(arac.aracTuru)" alt="Araç Türü Resmi" class="vehicle-image" />
+          <h3>{{ arac.aracTuru }}</h3>
+          <p><strong>Plaka:</strong> {{ arac.plaka }}</p>
+          <p><strong>Giriş Saati:</strong> {{ arac.girisSaati }}</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Araç Girişi Formu -->
     <div class="form-wrapper">
       <div class="form-section">
@@ -11,12 +24,7 @@
         <form @submit.prevent="submitForm">
           <div class="input-group">
             <label for="plaka">Araç Plakası:</label>
-            <input
-              type="text"
-              id="plaka"
-              v-model="plaka"
-              placeholder="Araç plakası girin"
-            />
+            <input type="text" id="plaka" v-model="plaka" placeholder="Araç plakası girin" />
           </div>
 
           <div class="input-group">
@@ -58,10 +66,10 @@ export default {
       aracTuru: "",
       errorMessage: "",
       successMessage: "",
+      otoparktakiAraclar: [], // Otoparktaki araçların listesi
     };
   },
   methods: {
-    // Kullanıcı bilgilerini almak ve mesajı güncellemek
     fetchUserContent() {
       axios
         .get("http://localhost:8080/api/test/user", {
@@ -79,50 +87,75 @@ export default {
           this.$router.push("/signin"); // Giriş sayfasına yönlendirme
         });
     },
+    fetchOtoparktakiAraclar() {
+      axios
+        .get("http://localhost:8080/api/arac/otoparktakiAraclar", {
+          withCredentials: true,
+        })
+        .then((response) => {
+          this.otoparktakiAraclar = response.data; // Gelen veriyi listeye ata
+        })
+        .catch(() => {
+          this.errorMessage = "Otoparktaki araçlar yüklenirken bir hata oluştu.";
+        });
+    },
     submitForm() {
-  if (!this.plaka || !this.aracTuru) {
-    this.errorMessage = "Lütfen tüm alanları doldurun!";
-    this.successMessage = "";
-    return;
-  }
-
-  axios
-    .post(
-      `http://localhost:8080/api/arac/girisYapti?plaka=${this.plaka}&aracTuru=${this.aracTuru}`,
-      {}, // Gövde boş
-      {
-        withCredentials: true, // Çerezlerin ve kimlik doğrulama bilgilerini dahil et
+      if (!this.plaka || !this.aracTuru) {
+        this.errorMessage = "Lütfen tüm alanları doldurun!";
+        this.successMessage = "";
+        return;
       }
-    )
-    .then(() => {
-      this.successMessage = "Araç başarıyla kaydedildi!";
-      this.errorMessage = "";
-      this.plaka = "";
-      this.aracTuru = "";
-    })
-    .catch((error) => {
-      this.errorMessage =
-        error.response && error.response.data
-          ? error.response.data
-          : "Bir hata oluştu!";
-      this.successMessage = "";
-    });
-},
 
+      axios
+        .post(
+          `http://localhost:8080/api/arac/girisYapti?plaka=${this.plaka}&aracTuru=${this.aracTuru}`,
+          {},
+          { withCredentials: true }
+        )
+        .then(() => {
+          this.successMessage = "Araç başarıyla kaydedildi!";
+          this.errorMessage = "";
+          this.plaka = "";
+          this.aracTuru = "";
+          this.fetchOtoparktakiAraclar(); // Listeyi güncelle
+        })
+        .catch((error) => {
+          this.errorMessage =
+            error.response && error.response.data
+              ? error.response.data
+              : "Bir hata oluştu!";
+          this.successMessage = "";
+        });
+    },
     logout() {
       axios
         .post("http://localhost:8080/api/auth/logout", {}, { withCredentials: true })
         .then(() => {
           window.location.reload();
-          this.$router.push("/signin"); // Çıkış yaptıktan sonra giriş sayfasına yönlendirme
+          this.$router.push("/signin");
         })
         .catch(() => {
           alert("Çıkış işlemi sırasında bir hata oluştu.");
         });
     },
+    getImageForVehicle(aracTuru) {
+      switch (aracTuru) {
+        case "IkiTekerliArac":
+          return new URL('@/assets/ikiTekerliArac.png', import.meta.url).href;
+        case "Otomobil":
+          return new URL('@/assets/otomobil.png', import.meta.url).href;
+        case "HafifTicariArac":
+          return new URL('@/assets/hafifTicariArac.png', import.meta.url).href;
+        case "AgirTicariArac":
+          return new URL('@/assets/agirTicariArac.png', import.meta.url).href;
+        default:
+          return "";
+      }
+    },
   },
   mounted() {
     this.fetchUserContent();
+    this.fetchOtoparktakiAraclar(); // İlk yüklemede araçları getir
   },
 };
 </script>
@@ -137,16 +170,47 @@ export default {
   background-color: white;
 }
 
-/* Header ve Form Ayrımı */
-.header-wrapper {
-  margin-bottom: 40px; /* Header ile form arasına boşluk ekler */
+/* Araç Kartları */
+.vehicle-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
 }
 
+.vehicle-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.vehicle-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.vehicle-card p {
+  margin: 5px 0;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.vehicle-image {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+/* Form ve Mesajlar */
 .form-wrapper {
-  margin-top: 20px; /* Üst kısım ile form arasındaki boşluk */
+  margin-top: 20px;
 }
 
-/* Araç Girişi Formu */
 .form-section {
   padding: 20px;
   background-color: #f9f9f9;
