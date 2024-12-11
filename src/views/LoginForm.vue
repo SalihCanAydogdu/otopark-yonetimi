@@ -154,7 +154,7 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #dbeaff;
+  background-color: #719fdf;
   text-align: center;
 }
 
