@@ -13,6 +13,13 @@
           <h3>{{ arac.aracTuru }}</h3>
           <p><strong>Plaka:</strong> {{ arac.plaka }}</p>
           <p><strong>Giriş Saati:</strong> {{ arac.girisSaati }}</p>
+
+          <!-- Action Buttons -->
+          <div class="actions">
+            <button @click="fiyatHesapla(arac.id, arac.aracTuru)" class="action-button">Fiyat Hesapla</button>
+            <button @click="indirimliFiyatHesapla(arac.id, arac.plaka, arac.aracTuru)" class="action-button">İndirimli Fiyat Hesapla</button>
+            <button @click="aracCikisYap(arac.id)" class="action-button">Araç Çıkışı Yap</button>
+          </div>
         </div>
       </div>
     </div>
@@ -53,7 +60,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axios from "axios";
 
@@ -152,6 +158,52 @@ export default {
           return "";
       }
     },
+    
+    // Fiyat Hesapla metodu
+    fiyatHesapla(id, aracTuru) {
+      axios
+        .get(`http://localhost:8080/api/arac/fiyatHesapla/${aracTuru}`, {
+          params: { id },
+          withCredentials: true,
+        })
+        .then((response) => {
+          alert(`Fiyat: ${response.data}`);
+        })
+        .catch(() => {
+          alert("Fiyat hesaplama sırasında bir hata oluştu.");
+        });
+    },
+
+    // İndirimli fiyat hesapla metodu
+    indirimliFiyatHesapla(id, plaka, aracTuru) {
+      axios
+        .get(`http://localhost:8080/api/arac/indirimHesapla/${aracTuru}`, {
+          params: { id, plaka },
+          withCredentials: true,
+        })
+        .then((response) => {
+          alert(`İndirimli Fiyat: ${response.data}`);
+        })
+        .catch(() => {
+          alert("İndirimli fiyat hesaplama sırasında bir hata oluştu.");
+        });
+    },
+
+    // Araç çıkışı yapma metodu
+    aracCikisYap(id) {
+      axios
+        .post("http://localhost:8080/api/arac/cikisYapti", null, {
+          params: { id },
+          withCredentials: true,
+        })
+        .then(() => {
+          alert("Araç çıkışı yapıldı.");
+          this.fetchOtoparktakiAraclar(); // Listeyi güncelle
+        })
+        .catch(() => {
+          alert("Araç çıkışı sırasında bir hata oluştu.");
+        });
+    }
   },
   mounted() {
     this.fetchUserContent();
@@ -159,6 +211,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 /* Genel Stiller */
@@ -289,5 +342,28 @@ export default {
 
 .logout-button:hover {
   background-color: #c82333;
+}
+
+/* Action Buttons */
+.action-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.action-button:hover {
+  background-color: #218838;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
 }
 </style>
