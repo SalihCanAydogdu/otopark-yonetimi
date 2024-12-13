@@ -55,7 +55,7 @@
     <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
 
     <!-- Çıkış Yap Butonu -->
-    <div class="actions">
+    <div class="logout-action">
       <button @click="logout" class="logout-button">Çıkış Yap</button>
     </div>
   </div>
@@ -338,6 +338,7 @@ export default {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  display: inline-block;
 }
 
 .logout-button:hover {
@@ -366,4 +367,10 @@ export default {
   align-items: center;
   margin-top: 10px;
 }
+
+.logout-action {
+  text-align: right;
+  margin-top: 10px;
+}
+
 </style>
