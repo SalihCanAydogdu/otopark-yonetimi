@@ -98,7 +98,7 @@ export default {
         const response = await axios.get("http://localhost:8080/api/test/admin", {
           withCredentials: true, // Oturum bilgilerini (ör. çerezleri) dahil eder
         });
-        //message.value = response.data; // Başarı durumunda gelen veriyi message'a atar
+        //message.value = response.data; 
       } catch (error) {
         //message.value = "Error loading content."; // Hata mesajı görüntülenir
         router.push("/signin"); // Giriş sayfasına yönlendirme
